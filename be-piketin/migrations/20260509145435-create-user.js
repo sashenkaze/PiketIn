@@ -26,7 +26,7 @@ module.exports = {
         allowNull: false,
       },
       jadwal_piket: {
-        type: Sequelize.ENUM('Senin', 'Selasa', 'Rabu', 'Jumat'),
+        type: Sequelize.ENUM('Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat'),
       },
       createdAt: {
         allowNull: false,
