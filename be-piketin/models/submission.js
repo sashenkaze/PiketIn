@@ -11,17 +11,27 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      Submission.belongsTo(models.User, { foreignKey: 'user_id' });
+      Submission.hasMany(models.SubmissionPekerjaan, { foreignKey: 'submission_id' });
+      Submission.belongsToMany(models.JenisPekerjaan, {
+        through: models.SubmissionPekerjaan,
+        foreignKey: 'submission_id',
+        otherKey: 'pekerjaan_id'
+      });
     }
   }
   Submission.init({
     user_id: DataTypes.INTEGER,
     tanggal_piket: DataTypes.DATEONLY,
-    status_piket: DataTypes.ENUM,
-    kondisi: DataTypes.ENUM,
+    status_piket: DataTypes.ENUM('Piket', 'Tidak Piket'),
+    kondisi: DataTypes.ENUM('Bersih dan Rapi', 'Bersih', 'Kurang'),
     catatan: DataTypes.TEXT,
     foto_sebelum: DataTypes.STRING,
     foto_sesudah: DataTypes.STRING,
-    status: DataTypes.ENUM,
+    status: {
+      type: DataTypes.ENUM('Pending', 'Accepted', 'Declined'),
+      defaultValue: 'Pending',
+    },
     alasan_decline: DataTypes.TEXT
   }, {
     sequelize,

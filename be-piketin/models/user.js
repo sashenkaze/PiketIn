@@ -11,6 +11,7 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      User.hasMany(models.Submission, { foreignKey: 'user_id' });
     }
   }
   User.init({
@@ -18,8 +19,8 @@ module.exports = (sequelize, DataTypes) => {
     nis: DataTypes.STRING,
     email: DataTypes.STRING,
     password: DataTypes.STRING,
-    role: DataTypes.ENUM,
-    jadwal_piket: DataTypes.ENUM
+    role: DataTypes.ENUM('admin', 'murid'),
+    jadwal_piket: DataTypes.ENUM('Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat')
   }, {
     sequelize,
     modelName: 'User',

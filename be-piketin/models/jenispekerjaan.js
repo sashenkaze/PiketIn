@@ -11,6 +11,12 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      JenisPekerjaan.hasMany(models.SubmissionPekerjaan, { foreignKey: 'pekerjaan_id' });
+      JenisPekerjaan.belongsToMany(models.Submission, {
+        through: models.SubmissionPekerjaan,
+        foreignKey: 'pekerjaan_id',
+        otherKey: 'submission_id'
+      });
     }
   }
   JenisPekerjaan.init({
