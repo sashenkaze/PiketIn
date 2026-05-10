@@ -91,5 +91,24 @@ module.exports = {
         } catch(error) {
             return res.status(500).json(response(500, "Server Error", error.message));
         }
-    }
+    },
+    getUserById: async (req, res) => {
+        try {
+            // req.params : ambil path dinamis, /users/2. ambil angka 2 (id)
+            const { id } = req.params;
+            // fingByPk : mencari berdasarkan primary key (id)
+            const user = await User.findByPk(id, {
+                attributes: {
+                    exclude: ['password'] //! sembunyikan password dri output
+                }
+            });
+            // jika data yg dicari tidak ada di db (artinya angka id nya salah)
+            if (!user) {
+                return res.status(400).json(response(400, "Data [id] not found"));
+            }
+            return res.status(200).json(response(200, "success", user));
+        } catch(error) {
+            return res.status(500).json(response(500, "Server Error", error.message));
+        }
+    },
 }
