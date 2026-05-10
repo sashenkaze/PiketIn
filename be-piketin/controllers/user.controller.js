@@ -45,6 +45,9 @@ module.exports = {
                 jadwal_piket: data.jadwal_piket
             });
             const { password: _, ...userData } = user.toJSON();
+            //! password dipisah (direname jadi _ lalu diabaikan)
+            //! sisanya dikumpulkan ke userData
+            //! hasilnya userData berisi semua field KECUALI password
             return res.status(201).json(response(201, "created", userData));
         } catch(error) {
             // penanganan error kode di try
@@ -53,5 +56,40 @@ module.exports = {
             return res.status(500).json(response(500, "Server Error", error.message));
         }
     },
-    
+    getAllUsers: async (req, res) => {
+        try {
+            const { name, sortBy, order, page, limit } = req.query;
+
+            const offset = (Number(page)-1) * Number(limit);
+
+            const { count, rows } = await User.findAndCountAll({
+                attributes: {
+                    exclude: ['password'] //! sembunyikan password dri output
+                },
+                // cari berdasarkan field name di db dari name req.query
+                where: name ? {
+                    name: {
+                        [Op.like]: `%${name}%` // mencari yg mirip
+                    } 
+                } : {}, // cari berdasarkan field name di db dari name req.query
+                // kl di params postman ada sortBy dan order, jalanin pengurutan, kl gk ada pake default, misal sortBy 'stock' order 'DESC'
+                order: sortBy && order ? [
+                    [sortBy, order] 
+                ] : [],
+                offset: Number(offset),
+                limit: Number(limit),
+            });
+
+            const formatPagination = {
+                data: rows,
+                limit: limit,
+                rows: (Number(offset)+1) + "-" + (Number(offset)+rows.length),
+                total: count,
+                page: page, // sedang di halaman ke berapa
+            }
+            return res.status(200).json(response(200, "success", formatPagination));
+        } catch(error) {
+            return res.status(500).json(response(500, "Server Error", error.message));
+        }
+    }
 }
