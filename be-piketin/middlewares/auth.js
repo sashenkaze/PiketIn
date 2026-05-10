@@ -20,5 +20,15 @@ module.exports = {
             // jika terjadi error, ini hubungannya dengan token. jd kasi 401 (suruh login lagi)
             return res.status(401).json(response(401, "unauthorized", "Please login and try again!"));
         }
+    },
+
+    // cek role admin/user(murid). dipanggil setelah checkToken 
+    checkRole: (role) => {
+        return (req, res, next) => {
+            if (req.user.role !== role) {
+                return res.status(403).json(response(403, "forbidden", "Access denied!"));
+            }
+            next();
+        }
     }
 }
