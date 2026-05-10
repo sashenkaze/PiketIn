@@ -5,7 +5,7 @@ const port = 3000
 const db = require('./models')
 
 db.sequelize.authenticate()
-    .then(() => console.log("DATABASE TERSAMBUNG SUDAH OKE! DONE! オッケー！ Хорошо!"))
+    .then(() => console.log("p(≧ O ≦)p ---- DATABASE SUDAH TERSAMBUNG! ---- q(≧ O ≦)q"))
     .catch(err => console.log(err))
 
 const methodOverride = require('method-override')
