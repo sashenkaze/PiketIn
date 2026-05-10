@@ -25,6 +25,7 @@ module.exports = {
     // cek role admin/user(murid). dipanggil setelah checkToken 
     checkRole: (role) => {
         return (req, res, next) => {
+            // kalau role user yg login gak sesuai dengan role yg diizinkan, kasih response 403 dan sebaliknya
             if (req.user.role !== role) {
                 return res.status(403).json(response(403, "forbidden", "Access denied!"));
             }

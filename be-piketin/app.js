@@ -3,12 +3,16 @@ const app = express()
 const port = 3000
 
 const db = require('./models')
+const methodOverride = require('method-override')
+const loginRoute = require('./routes/login.route')
+const userRoute = require('./routes/user.route')
+const jenisPekerjaanRoute = require('./routes/jenispekerjaan.route')
+const submissionRoute = require('./routes/submission.route')
 
 db.sequelize.authenticate()
     .then(() => console.log("p(≧ O ≦)p ---- DATABASE SUDAH TERSAMBUNG! ---- q(≧ O ≦)q"))
     .catch(err => console.log(err))
 
-const methodOverride = require('method-override')
 
 // kelompok app.use disimpan diatas dari app.get atau listen
 // app.use : memasang middleware atau menghubungkan route ke aplikasi
@@ -17,11 +21,10 @@ app.use(express.json())
 app.use(methodOverride('_method'))
 // membuat file yg tersimpan di folder uploads, bisa dimunculkan di browser nantinya
 app.use('/uploads', express.static('uploads'))
-
-
-app.get('/', (req, res) => {
-    res.send('Hello World!')
-})
+app.use('/', loginRoute)
+app.use('/users', userRoute)
+app.use('/jenis-pekerjaan', jenisPekerjaanRoute)
+app.use('/submissions', submissionRoute)
 
 app.listen(port, () => {
     console.log(`Example app listening on port ${port}`)
