@@ -149,5 +149,21 @@ module.exports = {
         } catch (error) {
             return res.status(500).json(response(500, "Server Error", error.message));
         }
+    },
+    deleteUser: async (req, res) => {
+        try {
+            const { id } = req.params;
+
+            const user = await User.findByPk(id);
+            if (!user) {
+                return res.status(400).json(response(400, 'Validasi Error', "Data not found"));
+            }
+            const deleteProcess = await User.destroy({
+                where: {id: id}
+            });
+            return res.status(200).json(response(200, "deleted"));
+        } catch (error) {
+            return res.status(500).json(response(500, "Server Error", error.message));
+        }
     }
 }
