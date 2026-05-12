@@ -111,5 +111,43 @@ module.exports = {
             return res.status(500).json(response(500, "Server Error", error.message));
         }
     },
-        
+    updateUser: async (req, res) => {
+        try {
+            const { id } = req.params;
+            const { name, nis, email, password, jadwal_piket } = req.body;
+
+            const schema = {
+                name: {type: "string"},
+                nis: {type: "string"},
+                email: {type: "string"},
+                jadwal_piket: {type: "enum", values: ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat']},
+            }
+            const data = {
+            name: name,
+            nis: nis,
+            email: email,
+            jadwal_piket: jadwal_piket
+            }
+            const validate = v.validate(data, schema);  
+            if (validate.length > 0) {
+                return res.status(400).json(response(400, "Validasi Error", validate));
+            }
+            const user = await User.findByPk(id);
+            if(!user) {
+                return res.status(400).json(response(400, 'Validasi Error', "Data not found"));
+            }
+            const updateProcess = await user.update({
+                name: data.name,
+                nis: data.nis,
+                email: data.email,
+                jadwal_piket: data.jadwal_piket
+            });
+            const newUser = await User.findByPk(id, {
+                attributes: { exclude: ['password'] }
+            });
+            return res.status(200).json(response(200, "success", newUser));
+        } catch (error) {
+            return res.status(500).json(response(500, "Server Error", error.message));
+        }
+    }
 }
