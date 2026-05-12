@@ -9,6 +9,6 @@ router.get('/', checkToken, checkRole('admin'), userController.getAllUsers)
 router.get('/:id', checkToken, checkRole('admin'), userController.getUserById)
 router.post('/', checkToken, checkRole('admin'), upload.none(), userController.createUser)
 router.put('/:id', checkToken, checkRole('admin'), upload.none(), userController.updateUser)
-// router.delete('/:id', checkToken, checkRole('admin'), userController.deleteUser)
+router.delete('/:id', checkToken, checkRole('admin'), userController.deleteUser)
 
 module.exports = router
