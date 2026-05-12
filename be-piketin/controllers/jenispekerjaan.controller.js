@@ -1,6 +1,6 @@
 const Validator = require("fastest-validator");
 const v = new Validator();
-const { User } = require('../models')
+const { JenisPekerjaan } = require('../models')
 const { response } = require('../helpers/response.formatter')
 const { Op } = require("sequelize");
 const passwordHash = require('password-hash')
@@ -39,15 +39,15 @@ module.exports = {
     },
     getAllJp: async (req, res) => {
         try {
-            const { nama_pekerjaan } = req.query;
+            const { nama_pekerjaan, sortBy, order, page, limit } = req.query;
 
             const offset = (Number(page)-1) * Number(limit);
 
             const { count, rows } = await JenisPekerjaan.findAndCountAll({
                 // cari berdasarkan field name di db dari name req.query
-                where: name ? {
-                    name: {
-                        [Op.like]: `%${name}%` // mencari yg mirip
+                where: nama_pekerjaan ? {
+                    nama_pekerjaan: {
+                        [Op.like]: `%${nama_pekerjaan}%` // mencari yg mirip
                     } 
                 } : {}, // cari berdasarkan field name di db dari name req.query
                 // kl di params postman ada sortBy dan order, jalanin pengurutan, kl gk ada pake default, misal sortBy 'stock' order 'DESC'
