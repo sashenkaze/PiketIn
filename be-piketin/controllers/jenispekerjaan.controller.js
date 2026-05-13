@@ -24,6 +24,12 @@ module.exports = {
                 return res.status(400).json(response(400, "Validasi Error", validate));
             }
 
+            //! kalau buat data baru dengan nama sama
+            if (await JenisPekerjaan.findOne({ 
+                where: { nama_pekerjaan } 
+            })) 
+            return res.status(400).json(response(400, "Pekerjaan sudah ada"));
+
             // proses menyimpan data melalui ORM sequelize
             const jp = await JenisPekerjaan.create({
                 nama_pekerjaan: data.nama_pekerjaan,
