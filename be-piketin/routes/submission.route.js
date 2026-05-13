@@ -11,8 +11,8 @@ router.post('/', checkToken, checkRole('murid'), upload.fields([
     { name: 'foto_sebelum', maxCount: 1 },
     { name: 'foto_sesudah', maxCount: 1 },
 ]), submissionController.createSubmission)
-router.get('/', checkToken, checkRole('admin'), submissionController.getAllSubmissions)
-router.get('/my', checkToken, checkRole('murid'), submissionController.getMySubmission)
-router.put('/:id/status', checkToken, checkRole('admin'), upload.none(), submissionController.updateStatus)
+// router.get('/', checkToken, checkRole('admin'), submissionController.getAllSubmissions)
+// router.get('/my', checkToken, checkRole('murid'), submissionController.getMySubmission)
+// router.put('/:id/status', checkToken, checkRole('admin'), upload.none(), submissionController.updateStatus)
 
 module.exports = router
