@@ -3,7 +3,6 @@ const v = new Validator();
 const { JenisPekerjaan } = require('../models')
 const { response } = require('../helpers/response.formatter')
 const { Op } = require("sequelize");
-const passwordHash = require('password-hash')
 
 module.exports = {
     createJp: async (req, res) => {
