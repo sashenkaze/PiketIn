@@ -142,7 +142,29 @@ module.exports = {
     },
     getMySubmission: async (req, res) => {
         try {
+            const { page, limit, status } = req.query;
+            const offset = (Number(page) - 1) * Number(limit);
 
+            const { count, rows } = await Submission.findAndCountAll({
+                where: status ? { status } : {},
+                offset: Number(offset),
+                limit: Number(limit),
+                //! include dengan object, bisa tambah opsi seperti attributes
+                include: [
+                    { model: User, attributes: { exclude: ['password'] } },
+                    { model: JenisPekerjaan }
+                ],
+                order: [['createdAt', 'DESC']]
+            });
+
+            const formatPagination = {
+                data: rows,
+                limit: limit,
+                rows: (Number(offset) + 1) + "-" + (Number(offset) + rows.length),
+                total: count,
+                page: page,
+            };
+            return res.status(200).json(response(200, "success", formatPagination));
         } catch {
             return res.status(500).json(response(500, "Server Error", error.message));
         }
