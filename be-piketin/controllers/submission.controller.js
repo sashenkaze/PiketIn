@@ -142,18 +142,15 @@ module.exports = {
     },
     getMySubmission: async (req, res) => {
         try {
-            const { page, limit, status } = req.query;
+            const { page, limit } = req.query;
             const offset = (Number(page) - 1) * Number(limit);
 
             const { count, rows } = await Submission.findAndCountAll({
-                where: status ? { status } : {},
+                //! filter berdasarkan user yg sedang login, bukan semua data. Jadi mengecek user mana yg sedang login dan hanya mengambil data itu
+                where: { user_id: req.user.userId },
                 offset: Number(offset),
                 limit: Number(limit),
-                //! include dengan object, bisa tambah opsi seperti attributes
-                include: [
-                    { model: User, attributes: { exclude: ['password'] } },
-                    { model: JenisPekerjaan }
-                ],
+                include: [{ model: JenisPekerjaan }],
                 order: [['createdAt', 'DESC']]
             });
 
