@@ -166,5 +166,48 @@ module.exports = {
             return res.status(500).json(response(500, "Server Error", error.message));
         }
     },
-    
+    updateStatus: async (req, res) => {
+        try {
+            const { id } = req.params;
+            const { action, alasan_decline } = req.body; // action: 'accept' atau 'decline'
+
+            const submission = await Submission.findByPk(id);
+            if (!submission) {
+                return res.status(400).json(response(400, "Submission not found"));
+            }
+
+            //! cek status — kalau sudah bukan Pending, tolak perubahan
+            if (submission.status !== 'Pending') {
+                return res.status(400).json(response(400, "Submission sudah diproses sebelumnya"));
+            }
+
+            //! tentukan status baru berdasarkan action dari admin
+            let newStatus;
+            if (action === 'accept') {
+                newStatus = 'Accepted';
+            } else if (action === 'decline') {
+                if (!alasan_decline) {
+                    return res.status(400).json(response(400, "Validasi Error", "Alasan decline wajib diisi"));
+                }
+                newStatus = 'Declined';
+            } else {
+                return res.status(400).json(response(400, "Validasi Error", "action harus 'accept' atau 'decline'"));
+            }
+
+            await Submission.update({
+                status: newStatus,
+                alasan_decline: action === 'decline' ? alasan_decline : null
+            }, { where: { id } });
+
+            const updated = await Submission.findByPk(id, {
+                include: [
+                    { model: User, attributes: { exclude: ['password'] } },
+                    { model: JenisPekerjaan }
+                ]
+            });
+            return res.status(200).json(response(200, "success", updated));
+        } catch (error) {
+            return res.status(500).json(response(500, "Server Error", error.message));
+        }
+    }
 }
