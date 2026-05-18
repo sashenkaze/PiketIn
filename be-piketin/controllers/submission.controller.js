@@ -169,14 +169,14 @@ module.exports = {
     updateStatus: async (req, res) => {
         try {
             const { id } = req.params;
-            const { action, alasan_decline } = req.body; // action: 'accept' atau 'decline'
+            const { action, alasan_decline } = req.body; // action: admin melakukan accept atau decline submission murid
 
             const submission = await Submission.findByPk(id);
             if (!submission) {
                 return res.status(400).json(response(400, "Submission not found"));
             }
 
-            //! cek status — kalau sudah bukan Pending, tolak perubahan
+            //! cek status kalau udh bukan pending, tolak perubahan
             if (submission.status !== 'Pending') {
                 return res.status(400).json(response(400, "Submission sudah diproses sebelumnya"));
             }
